@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.counties {
+  fill: none;
+}
+
+.states {
+  fill: none;
+  stroke: #fff;
+  stroke-linejoin: round;
+}
+
+.q0-9 { fill:rgb(247,251,255); }
+.q1-9 { fill:rgb(222,235,247); }
+.q2-9 { fill:rgb(198,219,239); }
+.q3-9 { fill:rgb(158,202,225); }
+.q4-9 { fill:rgb(107,174,214); }
+.q5-9 { fill:rgb(66,146,198); }
+.q6-9 { fill:rgb(33,113,181); }
+.q7-9 { fill:rgb(8,81,156); }
+.q8-9 { fill:rgb(8,48,107); }
+
+</style>
+<body>
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script src="//d3js.org/queue.v1.min.js"></script>
+<script src="//d3js.org/topojson.v1.min.js"></script>
+<script>
+
+var width = 960,
+    height = 600;
+
+
+
+var nodes = "["; //[{"name":"State","region":"County","upb":[[0,0]]}];
+
+var pair = [];
+
+var j = 0;
+
+d3.csv("CountiesLatLong.csv", function(links) {
+   
+   // sort by States 
+   links = links.sort(function(a, b)
+   {
+     if(a.State < b.State) return -1;
+     if(a.State > b.State) return 1;
+     return 0;
+   });
+
+   data = links;  //links.filter(function(d) {return d.State == links[0].State});
+
+   for (i=0; i<data.length - 1; i++)
+   {
+      if (data[i+1] )
+      {
+        pair.push([ [+data[i].Lat, +data[i].Long], [+data[i+1].Lat, +data[i+1].Long]]);
+        j++;
+      }
+      else
+      {
+        //data = links.filter(function(d) {return d.State == links[i].State});
+
+      }
+      nodes = nodes + JSON.stringify(pair);
+        
+   } 
+   
+   // chop the last "," and add the closing "]"
+   nodes = nodes.slice(0, -1) + "]";
+   console.log(nodes);
+
+
+});
+
+
+
+</script>
+</html>
